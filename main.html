@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Traductor</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        #chat-container { width: 300px; margin: auto; border: 1px solid #ccc; padding: 10px; }
+        #chat-box { height: 200px; overflow-y: scroll; border-bottom: 1px solid #ccc; margin-bottom: 10px; }
+        #user-input { width: 80%; padding: 5px; }
+        button { padding: 5px 10px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h2>Chatbot Traductor</h2>
+    <div id="chat-container">
+        <div id="chat-box"></div>
+        <select id="language">
+            <option value="en">Inglés</option>
+            <option value="fr">Francés</option>
+            <option value="de">Alemán</option>
+            <option value="it">Italiano</option>
+        </select>
+        <input type="text" id="user-input" placeholder="Escribe un mensaje...">
+        <button onclick="sendMessage()">Enviar</button>
+    </div>
+
+    <script>
+        function sendMessage() {
+            let input = document.getElementById("user-input").value;
+            let language = document.getElementById("language").value;
+            if (input.trim() === "") return;
+
+            let chatBox = document.getElementById("chat-box");
+            chatBox.innerHTML += `<p><strong>Tú:</strong> ${input}</p>`;
+
+            // API de traducción de Google (reemplazar con una clave válida)
+            let apiUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${language}&dt=t&q=${encodeURI(input)}`;
+
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    let translatedText = data[0][0][0];
+                    chatBox.innerHTML += `<p><strong>Bot:</strong> ${translatedText}</p>`;
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                })
+                .catch(error => console.error("Error en la traducción:", error));
+
+            document.getElementById("user-input").value = "";
+        }
+    </script>
+</body>
+</html>
